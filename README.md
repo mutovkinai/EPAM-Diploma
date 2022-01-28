@@ -9,9 +9,9 @@ Simple (lightweight) 3-tire application (front-end, back-end, database).
 
 - [ ] Back-end
     - [X] Retrieve a portion of data from API
-    - [] Store it in a database
-    - [] Update data on demand
-    - [] Update DB schema if needed on app’s update
+    - [ ] Store it in a database
+    - [ ] Update data on demand
+    - [ ] Update DB schema if needed on app’s update
 
 - [ ] Front-end
     - [ ] Display any portion of the data stored in the DB
