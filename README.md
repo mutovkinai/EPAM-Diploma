@@ -7,7 +7,7 @@ A simple Web-application, CI/CD infrastructure and pipeline for it.
 
 Simple (lightweight) 3-tire application (front-end, back-end, database).
 
-- [] Back-end
+- [ ] Back-end
     - [X] Retrieve a portion of data from API
     - [] Store it in a database
     - [] Update data on demand
@@ -18,8 +18,8 @@ Simple (lightweight) 3-tire application (front-end, back-end, database).
     - [ ] Provide a method to trigger data update process
 
 - [ ] Database
-    - [] Data must be stored in a persistent way
-    - [] Use cloud native DB solutions like an RDS/AzureSQL/CloudSQL.
+    - [ ] Data must be stored in a persistent way
+    - [ ] Use cloud native DB solutions like an RDS/AzureSQL/CloudSQL.
 
 ## Installation
 
