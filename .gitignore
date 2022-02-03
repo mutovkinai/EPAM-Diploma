@@ -10,3 +10,5 @@ venv.bak/
 # Flask stuff
 instance/
 .webassets-cache
+
+.DS_Store
