@@ -12,7 +12,7 @@ yesterday_date = datetime.strftime((datetime.now() - timedelta(1)), '%Y-%m-%d')
 observation_period = yesterday_date + '/' + today_date
 observation_metrics = 'relative_humidity,air_temperature'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = # DB URI HERE
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 

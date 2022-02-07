@@ -9,16 +9,16 @@ Simple (lightweight) 3-tire application (front-end, back-end, database).
 
 - [ ] Back-end
     - [X] Retrieve a portion of data from API
-    - [ ] Store it in a database
-    - [ ] Update data on demand
+    - [X] Store it in a database
+    - [x] Update data on demand
     - [ ] Update DB schema if needed on app’s update
 
 - [ ] Front-end
-    - [ ] Display any portion of the data stored in the DB
-    - [ ] Provide a method to trigger data update process
+    - [X] Display any portion of the data stored in the DB
+    - [X] Provide a method to trigger data update process
 
-- [ ] Database
-    - [ ] Data must be stored in a persistent way
+- [X] Database
+    - [X] Data must be stored in a persistent way
     - [ ] Use cloud native DB solutions like an RDS/AzureSQL/CloudSQL.
 
 ## Installation
@@ -32,6 +32,6 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
-python3 app.py
+pythoapp.py
 ```
 
