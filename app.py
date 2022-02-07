@@ -3,7 +3,6 @@ import dateutil.parser as dp
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request
 import os
-import sys
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
