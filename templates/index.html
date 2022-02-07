@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h1>Compare the Weather of 2 Cities: </h1>
+  <form action="{{ url_for ('render_results')}}" method="post">
+    <input type="text" name="city1" value="SORTAVALA" placeholder="SORTAVALA" readonly/>
+	<input type="text" name="city2" value="ST.PETERSBURG (VOEJKOVO) (26063-0)" placeholder="ST.PETERSBURG" readonly/>
+	<button type="submit"> Update weather </button>
+  </form>
+
+  <table>
+  <tr>
+    {% for header in headings %}
+    <th>{{ header }}</th>>
+    {% endfor %}
+  </tr>
+    {% for row in data %}
+        {% for cell in row %}
+            <td>  {{ cell }} </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+  </table>
+
+</body>
+</html>
