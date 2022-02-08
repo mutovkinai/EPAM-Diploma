@@ -12,7 +12,8 @@ yesterday_date = datetime.strftime((datetime.now() - timedelta(1)), '%Y-%m-%d')
 observation_period = yesterday_date + '/' + today_date
 observation_metrics = 'relative_humidity,air_temperature'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://newuser:password@localhost:5432/weather'
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
@@ -45,12 +46,26 @@ def weather_dashboard():
 
 @app.route('/', methods=['POST'])
 def render_results():
+
     city1 = request.form['city1']
-    # city2 = request.form['city2']
     city2 = 'ST.PETERSBURG*'
 
-    write_to_db(city1)
-    write_to_db(city2)
+    db_data = read_table(Weather)
+
+    loaded_data = parse_observation_data('ST.PETERSBURG*')
+    loaded_data += parse_observation_data('SORTAVALA')
+
+    new_data = []
+
+    for r in loaded_data:
+        if r not in db_data:
+            new_data.append(tuple(r))
+
+    if len(new_data) == 0:
+        print('No new data')
+    else:
+        print(new_data)
+        write_to_db(new_data)
 
     return render_template("index.html")
 
@@ -59,8 +74,9 @@ def render_results():
 if "CLIENTID" in os.environ:
     client_id = os.environ.get('CLIENTID')
 else:
+    client_id = '5241a48f-b042-4b12-82b7-0a6910375f5d'
     print("You need to set your frost.me.no ID in CLIENTID enviroment variable first.")
-    #sys.exit()
+
 
 # Define endpoint and parameters
 observations_url = 'https://frost.met.no/observations/v0.jsonld'
@@ -130,8 +146,7 @@ def parse_observation_data(city):
     return result
 
 
-def write_to_db(city):
-    data = parse_observation_data(city)
+def write_to_db(data):
 
     for item in data:
         city_name = item[0]
@@ -146,7 +161,16 @@ def write_to_db(city):
     db.session.commit()
     return
 
+def read_table(table_name):
+    data = []
+    records = db.session.query(table_name)
+    for r in records:
+        data_row = (r.city, str(r.date), str(r.time), r.air, r.humid)
+        data.append(data_row)
+    return data
+
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run()
+     db.create_all()
+     app.run()
+

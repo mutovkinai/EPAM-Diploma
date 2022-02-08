@@ -32,6 +32,6 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
-pythoapp.py
+python3 pythoapp.py
 ```
 
