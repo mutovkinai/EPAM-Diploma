@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 app = Flask(__name__)
 table_headings = ("City", "Date", "Time", "Air Temperature", "Humidity")
@@ -12,8 +13,7 @@ yesterday_date = datetime.strftime((datetime.now() - timedelta(1)), '%Y-%m-%d')
 observation_period = yesterday_date + '/' + today_date
 observation_metrics = 'relative_humidity,air_temperature'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://newuser:password@localhost:5432/weather'
-#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
@@ -36,24 +36,21 @@ class Weather(db.Model):
 
 @app.route('/', methods=['GET'])
 def weather_dashboard():
-    data = []
-    records = db.session.query(Weather).filter_by(date=yesterday_date)
-    for r in records:
-        data_row = (r.city, r.date, r.time, r.air, r.humid)
-        data.append(data_row)
-    return render_template('index.html', headings=table_headings, data=data)
+    city1 = read_city_data('SORTAVALA', yesterday_date)
+    city2 = read_city_data('ST.PETERSBURG (VOEJKOVO) (26063-0)', yesterday_date)
+    return render_template('index.html', headings=table_headings, data=city1, spbdata=city2)
 
 
 @app.route('/', methods=['POST'])
 def render_results():
 
     city1 = request.form['city1']
-    city2 = 'ST.PETERSBURG*'
+    city2 = request.form['city2']
 
     db_data = read_table(Weather)
 
-    loaded_data = parse_observation_data('ST.PETERSBURG*')
-    loaded_data += parse_observation_data('SORTAVALA')
+    loaded_data = parse_observation_data(city1)
+    loaded_data += parse_observation_data(city2)
 
     new_data = []
 
@@ -74,7 +71,6 @@ def render_results():
 if "CLIENTID" in os.environ:
     client_id = os.environ.get('CLIENTID')
 else:
-    client_id = '5241a48f-b042-4b12-82b7-0a6910375f5d'
     print("You need to set your frost.me.no ID in CLIENTID enviroment variable first.")
 
 
@@ -98,9 +94,18 @@ def check_request(request):
 
 # Get SN from city name
 def get_sn(city_name):
-    parameters = {'name': city_name}
+
+    if bool(' ' in city_name):
+        split_string = city_name.split(' ')
+        city_for_request = split_string[0] + '*'
+        print(city_for_request)
+    else:
+        city_for_request = city_name
+
+    parameters = {'name': city_for_request}
+    print(parameters)
     r = requests.get(sources_url, parameters, auth=(client_id, ''))
-    check_request(r)
+    #check_request(r)
     json = r.json()
     data = json['data']
 
@@ -113,7 +118,7 @@ def get_observations(city):
     sn = get_sn(city)
     parameters = dict(sources=sn, elements=observation_metrics, referencetime=observation_period)
     r = requests.get(observations_url, parameters, auth=(client_id, ''))
-    check_request(r)
+    #check_request(r)
     # Extract JSON data
     json = r.json()
     data = json['data']
@@ -161,6 +166,7 @@ def write_to_db(data):
     db.session.commit()
     return
 
+
 def read_table(table_name):
     data = []
     records = db.session.query(table_name)
@@ -170,7 +176,16 @@ def read_table(table_name):
     return data
 
 
+def read_city_data(city, date):
+    data = []
+    records = db.session.query(Weather).filter_by(city=city, date=date)
+    for r in records:
+        data_row = (r.city, r.date, r.time, r.air, r.humid)
+        data.append(data_row)
+    return data
+
+
 if __name__ == '__main__':
-     db.create_all()
-     app.run()
+    db.create_all()
+    app.run()
 

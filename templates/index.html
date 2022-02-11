@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Weather comparison</title>
 </head>
 <body>
-  <h1>Compare the Weather of 2 Cities: </h1>
+  <h1>Compare temperature and humidity of cities: </h1>
+
   <form action="{{ url_for ('render_results')}}" method="post">
-    <input type="text" name="city1" value="SORTAVALA" placeholder="SORTAVALA" readonly/>
-	<input type="text" name="city2" value="ST.PETERSBURG (VOEJKOVO) (26063-0)" placeholder="ST.PETERSBURG" readonly/>
-	<button type="submit"> Update weather </button>
+      <label>City 1</label>
+      <input type="text" name="city1" value="SORTAVALA" placeholder="SORTAVALA" size="50" readonly>
+      <label>City 2</label>
+      <input type="text" name="city2" value="ST.PETERSBURG (VOEJKOVO) (26063-0)" placeholder="ST.PETERSBURG (VOEJKOVO) (26063-0)" size="50" readonly>
+	<button type="submit"> Update data in DB </button>
   </form>
 
+<div class="row">
+  <div class="column">
   <table>
   <tr>
     {% for header in headings %}
-    <th>{{ header }}</th>>
+    <th>{{ header }}</th>
     {% endfor %}
   </tr>
     {% for row in data %}
@@ -25,6 +32,24 @@
         </tr>
     {% endfor %}
   </table>
+  </div>
+<div class="column">
+  <table>
+  <tr>
+    {% for header in headings %}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+    {% for row in spbdata %}
+        {% for cell in row %}
+            <td>  {{ cell }} </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+
 
 </body>
 </html>
